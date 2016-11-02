@@ -1,0 +1,133 @@
+#!/bin/bash
+#################
+#
+# Build Functions
+#
+#################
+
+#Template Root
+TEMPLATES=~/scripts/generator/templates
+
+#Base Tree Generation
+function tree {
+	echo "Unpacking all the boxes and throwing stuff everywhere."
+  mkdir -p ./{dist,src}
+  cd src
+	mkdir -p ./{data,img,scripts}
+  cd ..
+}
+
+#SCSS Function
+function scss {
+	echo "Dumping all the sass files into the sass box." 
+  cd src
+	mkdir styles && cd styles
+	cp -R $TEMPLATES/styles/scss/. ./
+  cp $TEMPLATES/gulp/gulp/styles/sass/styles.js ./gulp/
+  npm install --save-dev gulp-sass
+}
+
+#Stylus Function
+function stylus {
+	echo "Copying Stylus files over." 
+  cd src
+	mkdir styles && cd styles
+	cp -R $TEMPLATES/styles/stylus/. ./
+}
+
+#Nunjucks Function
+function nunjucks {
+	echo "Moving the Nunjucks into their correct boxes." 
+  cd src
+	mkdir -p ./{pages,templates}
+	cp -R $TEMPLATES/html/nunjucks/templates/. ./templates
+	cp -R $TEMPLATES/html/nunjucks/pages/. ./pages
+  cp $TEMPLATES/gulp/gulp/html/nunjucks/html.js ./gulp/
+  npm install --save-dev gulp-sass gulp-data gulp-nunjucks-render
+}
+
+#Gulp Function
+function gulpinstall {
+  echo "*gulp*"
+  cp $TEMPLATES/gulp/gulpfile.js ./
+  mkdir gulp
+  cp $TEMPLATES/gulp/gulp/{config.js,images.js,server.js} ./gulp
+
+  echo "Installing Default Dependencies, this could take a few minutes. It could and it most likely will."
+
+  #Install Default Dependencies
+  npm install --save-dev gulp-imagemin gulp gulp-sourcemaps gulp-autoprefixer gulp-concat gulp-minify-css gulp-rename browser-sync gulp-require-tasks
+  echo "Finally Done."
+}
+
+#################
+#
+# Script Flow
+#
+#################
+
+#Git
+while true; do
+    read -p "Do you want to use Git?" yn
+    case $yn in
+        [Yy]* ) git init; break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done 
+
+#build initial structure
+tree
+
+#Initialize NPM and create package.json
+npm init
+echo "node_modules" .gitignore
+
+# Taskrunner
+echo "Select a Taskrunner"
+taskrunners=("Gulp" "Grunt" "None")
+select opt in "${taskrunners[@]}"
+do
+  case $opt in
+    "Gulp") gulpinstall; break;;
+    "Grunt") echo "you have selected grunt"; break;;
+    "None") break ;;
+  *) echo invalid option;;
+  esac
+done
+
+#Templating Engines
+echo "Select a Templating Engine"
+engines=("Nunjucks" "Jade" "None")
+select opt in "${engines[@]}"
+do
+  case $opt in
+    "Nunjucks") nunjucks;break;;
+    "Jade") echo "You have selected Jade"; break;;
+    "None") break;;
+	*) echo invalid option;;
+  esac
+done
+
+# CSS PreProcessors
+echo "Select a CSS PreProcessor"
+preprocessors=("SCSS" "Stylus" "None")
+select opt in "${preprocessors[@]}"
+do
+  case $opt in
+    "SCSS") scss; break;;
+    "Stylus") stylus; break;;
+    "None") break ;;
+	*) echo invalid option;;
+  esac
+done
+
+#Final Scripts
+echo "Running gulp"
+gulp
+
+echo "opening sublime"
+cd .. 
+subl .
+
+

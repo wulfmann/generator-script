@@ -1,0 +1,9 @@
+{
+  "navigation": [{
+    "name": "image-one.png",
+    "alt": "Image one alt text"
+  }, {
+    "name": "image-two.png",
+    "alt": "Image two alt text"
+  }]
+}
