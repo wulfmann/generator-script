@@ -43,7 +43,8 @@ function nunjucks {
 	cp -R $TEMPLATES/html/nunjucks/templates/. ./templates
 	cp -R $TEMPLATES/html/nunjucks/pages/. ./pages
   cp $TEMPLATES/gulp/gulp/html/nunjucks/html.js ./gulp/
-  npm install --save-dev gulp-sass gulp-data gulp-nunjucks-render
+  #html dependencies
+  npm install --save-dev gulp-data gulp-nunjucks-render
 }
 
 #Gulp Function
@@ -72,7 +73,7 @@ while true; do
     case $yn in
         [Yy]* ) git init; break;;
         [Nn]* ) break;;
-        * ) echo "Please answer yes or no.";;
+        * ) echo "Please answer yes or no. (you don't really have a choice)";;
     esac
 done 
 

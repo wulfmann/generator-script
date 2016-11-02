@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cp ./create /usr/local/bin/
+
+mkdir -p ~/scripts/generator
+cp ./templates ~/scripts/generator
+cd ~
+mkdir newproject && cd newproject
+create
